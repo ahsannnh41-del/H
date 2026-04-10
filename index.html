@@ -3,203 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday Arooj! 🎂</title>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <title>Arooj's Birthday Surprise 🎂</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Dancing+Script:wght@700&display=swap');
 
         :root {
-            --primary: #ff758c;
-            --secondary: #ff7eb3;
-            --bg: #fff5f7;
+            --pink-bg: #fff0f3;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --primary-pink: #ff85a2;
+            --accent-purple: #9b59b6;
         }
 
-        body {
-            margin: 0; padding: 0;
-            background-color: var(--bg);
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
             font-family: 'Poppins', sans-serif;
-            display: flex; justify-content: center; align-items: center;
-            height: 100vh; overflow: hidden;
+            background: linear-gradient(135deg, #fff5f7 0%, #f3e5f5 100%);
+            overflow: hidden; display: flex; justify-content: center; align-items: center;
         }
 
-        /* Loading Screen */
-        #loader {
-            position: fixed; inset: 0; background: white;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 100; transition: opacity 0.8s ease;
+        /* Floating background elements */
+        .bg-element { position: absolute; z-index: -1; opacity: 0.3; animation: float 6s infinite ease-in-out; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+
+        /* Scene Container */
+        .scene {
+            width: 85%; max-width: 380px;
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            display: none; /* Initially hidden */
+            flex-direction: column; align-items: center;
+            transition: all 0.5s ease;
         }
+        .active { display: flex; animation: fadeIn 0.8s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
-        .heart-loader {
-            font-size: 50px; animation: beat 0.8s infinite alternate;
-        }
-        @keyframes beat { to { transform: scale(1.2); } }
+        /* Graphics */
+        .graphic-container { width: 100%; height: 180px; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; position: relative; }
+        .panda-img, .cat-img { width: 150px; }
+        
+        /* Cake CSS */
+        .cake-container { position: relative; width: 120px; height: 100px; }
+        .cake-body { width: 120px; height: 70px; background: #f9d5e5; border-radius: 10px 10px 0 0; position: absolute; bottom: 0; border-bottom: 5px solid #e08fb1; }
+        .cake-body::after { content: ''; position: absolute; width: 100%; height: 20px; background: #e08fb1; top: 20px; left: 0; }
+        .topping { width: 100%; height: 15px; background: #ff85a2; position: absolute; top: 0; border-radius: 10px 10px 0 0; display: none; }
+        .candles { display: none; position: absolute; top: -30px; width: 100%; justify-content: space-around; }
+        .candle { width: 8px; height: 30px; background: #fff; border-radius: 4px; position: relative; }
+        .flame { width: 10px; height: 15px; background: orange; border-radius: 50%; position: absolute; top: -12px; left: -1px; animation: flicker 0.3s infinite; }
+        @keyframes flicker { 50% { opacity: 0.6; transform: scale(1.2); } }
 
-        /* 3D Card Animation Style */
-        .container {
-            perspective: 1000px;
-            width: 90%; max-width: 400px;
-            display: none;
-        }
-
-        .card {
-            background: white; border-radius: 20px;
-            padding: 30px; text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-            transform-style: preserve-3d;
-            animation: slideUp 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(50px) rotateX(-10deg); }
-            to { opacity: 1; transform: translateY(0) rotateX(0); }
-        }
-
-        .photo-frame {
-            width: 150px; height: 150px;
-            margin: 0 auto 20px;
-            border-radius: 50%;
-            border: 5px solid white;
-            box-shadow: 0 10px 20px rgba(255, 117, 140, 0.3);
-            overflow: hidden;
-            background: #eee;
-        }
-
-        .photo-frame img { width: 100%; height: 100%; object-fit: cover; }
-
-        h1 {
-            font-family: 'Dancing Script', cursive;
-            color: var(--primary); font-size: 2.2rem; margin: 10px 0;
-        }
-
-        .message-box {
-            min-height: 120px; font-size: 0.95rem;
-            color: #555; line-height: 1.6; margin-bottom: 20px;
-        }
-
+        /* Buttons */
         .btn {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            color: white; border: none; padding: 12px 25px;
-            border-radius: 30px; font-weight: 600; cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 117, 140, 0.4);
-            transition: 0.3s;
+            background: linear-gradient(45deg, #ff85a2, #ffacbd);
+            color: white; border: none; padding: 12px 28px;
+            border-radius: 25px; font-weight: 600; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 133, 162, 0.3);
+            margin-top: 20px; transition: 0.3s;
         }
+        .btn:hover { transform: scale(1.05); }
 
-        .btn:hover { transform: scale(1.05); box-shadow: 0 8px 20px rgba(255, 117, 140, 0.6); }
+        /* Text Styles */
+        h1 { color: #d63384; font-size: 1.4rem; margin: 10px 0; }
+        p { color: #666; font-size: 0.9rem; line-height: 1.5; margin: 5px 0; }
 
-        /* Floating Balloons Animation */
-        .balloon {
-            position: absolute; bottom: -100px;
-            width: 40px; height: 50px;
-            background: var(--primary);
-            border-radius: 50%; opacity: 0.6;
-            animation: float 6s infinite ease-in;
-        }
-
-        @keyframes float {
-            to { transform: translateY(-120vh) translateX(50px); opacity: 0; }
-        }
+        .photo-frame { width: 220px; height: 220px; border-radius: 15px; overflow: hidden; border: 5px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .photo-frame img { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
 <body>
 
-    <div id="loader">
-        <div class="heart-loader">💖</div>
-        <p>Arooj's Birthday Surprise is Loading...</p>
+    <div class="bg-element" style="top: 10%; left: 10%; font-size: 30px;">🎈</div>
+    <div class="bg-element" style="top: 20%; right: 15%; font-size: 25px;">⭐</div>
+    <div class="bg-element" style="bottom: 15%; left: 20%; font-size: 35px;">🌸</div>
+
+    <div id="stage1" class="scene active">
+        <div class="graphic-container">
+            <img class="panda-img" src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1ZjR4N3p5bm9hZnd4bmh6bm9hZnd4bmh6bm9hZnd4bmh6bm9hZnd4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/v6aOebdclIybe/giphy.gif">
+        </div>
+        <h1>Hey Arooj!</h1>
+        <p>A Cutiepie was born today...</p>
+        <p><strong>Birthdate: 12 April 2009</strong></p>
+        <p>Yes, it's YOU! A little surprise awaits...</p>
+        <button class="btn" onclick="goToStage(2)">Start the surprise 🎁</button>
     </div>
 
-    <div class="container" id="main-content">
-        <div class="card">
-            <div class="photo-frame">
-                <img id="display-photo" src="https://i.ibb.co/5xtNqX0h/image.jpg" alt="Arooj">
+    <div id="stage2" class="scene">
+        <div class="graphic-container">
+            <div class="cake-container" id="cake">
+                <div class="cake-body">
+                    <div class="topping" id="cakeTopping"></div>
+                </div>
+                <div class="candles" id="cakeCandles">
+                    <div class="candle"><div class="flame"></div></div>
+                    <div class="candle"><div class="flame"></div></div>
+                    <div class="candle"><div class="flame"></div></div>
+                </div>
             </div>
-            
-            <h1 id="title">Happy Birthday Arooj! 🎂</h1>
-            
-            <div class="message-box" id="msg">
-                Happy Birthday to the most special girl, my bestie jan Arooj 🎂👑💖
-            </div>
-
-            <button class="btn" id="next-btn" onclick="nextPage()">Aage Dekho ✨</button>
         </div>
+        <h1>Let's make it special!</h1>
+        <p>The cake looks a bit empty, right?</p>
+        <button class="btn" id="decorateBtn" onclick="decorateCake()">Decorate the cake ✨</button>
+        <button class="btn" id="cutBtn" style="display:none;" onclick="cutTheCake()">Cut the cake 🎂</button>
+    </div>
+
+    <div id="stage3" class="scene">
+        <div class="photo-frame">
+            <img id="slideImg" src="https://i.ibb.co/5xtNqX0h/image.jpg">
+        </div>
+        <div style="margin-top: 15px;">
+            <p id="slideText" style="font-weight: 500;"></p>
+        </div>
+        <button class="btn" onclick="nextSlide()">Next Surprise ✨</button>
+    </div>
+
+    <div id="stage4" class="scene">
+        <div class="graphic-container">
+            <img class="cat-img" src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExbjNxeG54N3p5bm9hZnd4bmh6bm9hZnd4bmh6bm9hZnd4bmh6bm9hZnd4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/S6S7G3u89Z1x5SjD0k/giphy.gif">
+        </div>
+        <h1>Lots of love for you ❤️</h1>
+        <p>Once again, Happy Birthday Arooj! Hope you loved your surprise.</p>
+        <button class="btn" onclick="location.reload()">Replay ↻</button>
     </div>
 
     <script>
-        const data = [
-            {
-                photo: "https://i.ibb.co/5xtNqX0h/image.jpg",
-                text: "You’re not just my best friend, you’re my whole vibe, my happiness, and my favorite person 🥹💕<br>With you, every moment feels magical and every laugh feels extra special ✨😂"
-            },
-            {
-                photo: "https://i.ibb.co/svKrgk0c/image.jpg",
-                text: "May your life be filled with endless smiles, crazy adventures, and all the love you truly deserve 🌸💫💝<br>I pray Allah blesses you with success, peace, and everything your heart wishes for 🤲❤️"
-            },
-            {
-                photo: "https://i.ibb.co/RG9By1hp/image.jpg",
-                text: "Thank you for being my partner in crime, my secret keeper, and my forever support 🫶😄<br>I’m so lucky to have you in my life, Arooj 💕🥰"
-            },
-            {
-                photo: "https://i.ibb.co/5xtNqX0h/image.jpg",
-                text: "Love you forever, bestie jan 😘💖<br>Now enjoy your day like a queen… because today is all about YOU 👑🎉🔥"
-            }
+        const slideshowData = [
+            { img: "https://i.ibb.co/5xtNqX0h/image.jpg", text: "Happy Birthday to the most special girl, my bestie jan Arooj 🎂👑💖" },
+            { img: "https://i.ibb.co/svKrgk0c/image.jpg", text: "You’re not just my best friend, you’re my whole vibe, my happiness, and my favorite person 🥹💕" },
+            { img: "https://i.ibb.co/RG9By1hp/image.jpg", text: "May your life be filled with endless smiles, crazy adventures, and all the love you truly deserve 🌸💫💝" },
+            { img: "https://i.ibb.co/5xtNqX0h/image.jpg", text: "Thank you for being my partner in crime, my secret keeper, and my forever support 🫶😄" },
+            { img: "https://i.ibb.co/svKrgk0c/image.jpg", text: "I’m so lucky to have you in my life, Arooj 💕🥰" },
+            { img: "https://i.ibb.co/RG9By1hp/image.jpg", text: "Love you forever, bestie jan 😘💖\nNow enjoy your day like a queen! 👑🎉🔥" }
         ];
 
-        let currentPage = 0;
+        let currentSlide = 0;
 
-        // Loader logic
-        setTimeout(() => {
-            document.getElementById('loader').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('main-content').style.display = 'block';
-                createBalloons();
-            }, 800);
-        }, 3000);
-
-        function nextPage() {
-            if (currentPage < data.length) {
-                const item = data[currentPage];
-                document.getElementById('display-photo').src = item.photo;
-                document.getElementById('msg').innerHTML = item.text;
-                
-                // Animation trigger
-                const card = document.querySelector('.card');
-                card.style.animation = 'none';
-                card.offsetHeight; /* trigger reflow */
-                card.style.animation = 'slideUp 0.8s ease-out forwards';
-
-                fireConfetti();
-                currentPage++;
-
-                if (currentPage === data.length) {
-                    document.getElementById('next-btn').innerText = "Celebrate Again! 🎉";
-                    currentPage = 0; // Restart loop
-                } else {
-                    document.getElementById('next-btn').innerText = "Aur Surprises... ✨";
-                }
-            }
+        function goToStage(n) {
+            document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+            document.getElementById('stage' + n).classList.add('active');
         }
 
-        function fireConfetti() {
-            confetti({
-                particleCount: 100,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#ff758c', '#ff7eb3', '#ffd1dc']
+        function decorateCake() {
+            document.getElementById('cakeTopping').style.display = 'block';
+            document.getElementById('cakeCandles').style.display = 'flex';
+            document.getElementById('decorateBtn').style.display = 'none';
+            document.getElementById('cutBtn').style.display = 'inline-block';
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        }
+
+        function cutTheCake() {
+            gsap.to("#cake", { 
+                opacity: 0, 
+                scale: 0.5, 
+                duration: 1.5, 
+                onComplete: () => {
+                    document.getElementById('stage2').innerHTML = `
+                        <h1>Yummm! 😋</h1>
+                        <p>A wish for you... (Cake dissolved)</p>
+                        <button class="btn" onclick="startSlideshow()">Show next surprise ✨</button>
+                    `;
+                }
             });
         }
 
-        function createBalloons() {
-            for(let i=0; i<15; i++) {
-                setTimeout(() => {
-                    const b = document.createElement('div');
-                    b.className = 'balloon';
-                    b.style.left = Math.random() * 100 + 'vw';
-                    b.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 80%)`;
-                    document.body.appendChild(b);
-                    setTimeout(() => b.remove(), 6000);
-                }, i * 400);
+        function startSlideshow() {
+            goToStage(3);
+            updateSlide();
+        }
+
+        function updateSlide() {
+            const data = slideshowData[currentSlide];
+            document.getElementById('slideImg').src = data.img;
+            document.getElementById('slideText').innerText = data.text;
+            gsap.from("#slideImg", { x: 50, opacity: 0, duration: 0.5 });
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            if (currentSlide < slideshowData.length) {
+                updateSlide();
+            } else {
+                goToStage(4);
+                confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
             }
         }
+
+        // Automatic Background Decoration
+        function fireBalloons() {
+            confetti({ particleCount: 2, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff85a2', '#ffacbd'] });
+            confetti({ particleCount: 2, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff85a2', '#ffacbd'] });
+        }
+        setInterval(fireBalloons, 2000);
     </script>
 </body>
 </html>
