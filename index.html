@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Arooj! 🎂</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --primary: #ff758c;
+            --secondary: #ff7eb3;
+            --bg: #fff5f7;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg);
+            font-family: 'Poppins', sans-serif;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; overflow: hidden;
+        }
+
+        /* Loading Screen */
+        #loader {
+            position: fixed; inset: 0; background: white;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 100; transition: opacity 0.8s ease;
+        }
+
+        .heart-loader {
+            font-size: 50px; animation: beat 0.8s infinite alternate;
+        }
+        @keyframes beat { to { transform: scale(1.2); } }
+
+        /* 3D Card Animation Style */
+        .container {
+            perspective: 1000px;
+            width: 90%; max-width: 400px;
+            display: none;
+        }
+
+        .card {
+            background: white; border-radius: 20px;
+            padding: 30px; text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            transform-style: preserve-3d;
+            animation: slideUp 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px) rotateX(-10deg); }
+            to { opacity: 1; transform: translateY(0) rotateX(0); }
+        }
+
+        .photo-frame {
+            width: 150px; height: 150px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            border: 5px solid white;
+            box-shadow: 0 10px 20px rgba(255, 117, 140, 0.3);
+            overflow: hidden;
+            background: #eee;
+        }
+
+        .photo-frame img { width: 100%; height: 100%; object-fit: cover; }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--primary); font-size: 2.2rem; margin: 10px 0;
+        }
+
+        .message-box {
+            min-height: 120px; font-size: 0.95rem;
+            color: #555; line-height: 1.6; margin-bottom: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white; border: none; padding: 12px 25px;
+            border-radius: 30px; font-weight: 600; cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 117, 140, 0.4);
+            transition: 0.3s;
+        }
+
+        .btn:hover { transform: scale(1.05); box-shadow: 0 8px 20px rgba(255, 117, 140, 0.6); }
+
+        /* Floating Balloons Animation */
+        .balloon {
+            position: absolute; bottom: -100px;
+            width: 40px; height: 50px;
+            background: var(--primary);
+            border-radius: 50%; opacity: 0.6;
+            animation: float 6s infinite ease-in;
+        }
+
+        @keyframes float {
+            to { transform: translateY(-120vh) translateX(50px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="heart-loader">💖</div>
+        <p>Arooj's Birthday Surprise is Loading...</p>
+    </div>
+
+    <div class="container" id="main-content">
+        <div class="card">
+            <div class="photo-frame">
+                <img id="display-photo" src="https://i.ibb.co/5xtNqX0h/image.jpg" alt="Arooj">
+            </div>
+            
+            <h1 id="title">Happy Birthday Arooj! 🎂</h1>
+            
+            <div class="message-box" id="msg">
+                Happy Birthday to the most special girl, my bestie jan Arooj 🎂👑💖
+            </div>
+
+            <button class="btn" id="next-btn" onclick="nextPage()">Aage Dekho ✨</button>
+        </div>
+    </div>
+
+    <script>
+        const data = [
+            {
+                photo: "https://i.ibb.co/5xtNqX0h/image.jpg",
+                text: "You’re not just my best friend, you’re my whole vibe, my happiness, and my favorite person 🥹💕<br>With you, every moment feels magical and every laugh feels extra special ✨😂"
+            },
+            {
+                photo: "https://i.ibb.co/svKrgk0c/image.jpg",
+                text: "May your life be filled with endless smiles, crazy adventures, and all the love you truly deserve 🌸💫💝<br>I pray Allah blesses you with success, peace, and everything your heart wishes for 🤲❤️"
+            },
+            {
+                photo: "https://i.ibb.co/RG9By1hp/image.jpg",
+                text: "Thank you for being my partner in crime, my secret keeper, and my forever support 🫶😄<br>I’m so lucky to have you in my life, Arooj 💕🥰"
+            },
+            {
+                photo: "https://i.ibb.co/5xtNqX0h/image.jpg",
+                text: "Love you forever, bestie jan 😘💖<br>Now enjoy your day like a queen… because today is all about YOU 👑🎉🔥"
+            }
+        ];
+
+        let currentPage = 0;
+
+        // Loader logic
+        setTimeout(() => {
+            document.getElementById('loader').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                createBalloons();
+            }, 800);
+        }, 3000);
+
+        function nextPage() {
+            if (currentPage < data.length) {
+                const item = data[currentPage];
+                document.getElementById('display-photo').src = item.photo;
+                document.getElementById('msg').innerHTML = item.text;
+                
+                // Animation trigger
+                const card = document.querySelector('.card');
+                card.style.animation = 'none';
+                card.offsetHeight; /* trigger reflow */
+                card.style.animation = 'slideUp 0.8s ease-out forwards';
+
+                fireConfetti();
+                currentPage++;
+
+                if (currentPage === data.length) {
+                    document.getElementById('next-btn').innerText = "Celebrate Again! 🎉";
+                    currentPage = 0; // Restart loop
+                } else {
+                    document.getElementById('next-btn').innerText = "Aur Surprises... ✨";
+                }
+            }
+        }
+
+        function fireConfetti() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#ff758c', '#ff7eb3', '#ffd1dc']
+            });
+        }
+
+        function createBalloons() {
+            for(let i=0; i<15; i++) {
+                setTimeout(() => {
+                    const b = document.createElement('div');
+                    b.className = 'balloon';
+                    b.style.left = Math.random() * 100 + 'vw';
+                    b.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 80%)`;
+                    document.body.appendChild(b);
+                    setTimeout(() => b.remove(), 6000);
+                }, i * 400);
+            }
+        }
+    </script>
+</body>
+</html>
