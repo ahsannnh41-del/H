@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy Birthday Arooj!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
@@ -23,13 +24,20 @@
             overflow: hidden; display: flex; justify-content: center; align-items: center;
         }
 
-        /* Floating background elements */
+        /* Mobile Frame Styling */
+        .mobile-frame {
+            width: 100%; height: 100%; max-width: 420px;
+            background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow-y: auto; overflow-x: hidden; position: relative;
+        }
+
+        /* Background elements */
         .bg-element { position: absolute; z-index: -1; opacity: 0.3; animation: float 6s infinite ease-in-out; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
 
-        /* Mute/Unmute button */
-        .mute-btn { position: fixed; top: 10px; right: 10px; background: rgba(255,255,255,0.5); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; }
-        .mute-btn svg { width: 24px; height: 24px; fill: #666; }
+        /* Controls */
+        .mute-btn { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.5); border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 1000; }
+        .mute-btn i { font-size: 20px; color: #666; }
 
         /* Scene Container */
         .scene {
@@ -44,18 +52,20 @@
             display: none; /* Initially hidden */
             flex-direction: column; align-items: center;
             transition: all 0.5s ease;
+            margin: 50px auto;
         }
         .active { display: flex; animation: fadeIn 0.8s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
-        /* Fixed CSS Animation: No external file needed */
-        .heart-loader { position: relative; width: 100px; height: 90px; margin-bottom: 20px; animation: heartbeat 1s infinite alternate; }
-        .heart-loader:before, .heart-loader:after { content: ""; position: absolute; left: 50px; top: 0; width: 50px; height: 80px; background: #ff7e5f; border-radius: 50px 50px 0 0; transform: rotate(-45deg); transform-origin: 0 100%; }
-        .heart-loader:after { left: 0; transform: rotate(45deg); transform-origin: 100% 100%; background: #feb47b; }
-        @keyframes heartbeat { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+        /* Fix GIF issues: Self-contained code animations */
+        .panda-anim { position: relative; width: 100px; height: 100px; background: #e0f7fa; border-radius: 50%; overflow: hidden; margin-bottom: 20px; }
+        .panda-anim::before, .panda-anim::after { content: ''; position: absolute; background: white; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .panda-anim::before { width: 60px; height: 30px; top: 30px; left: 20px; transform: rotate(-10deg); animation: pandaWiggle 1s infinite alternate; }
+        .panda-anim::after { width: 40px; height: 40px; bottom: 10px; right: 10px; animation: pandaWiggle 1s infinite alternate-reverse; }
+        @keyframes pandaWiggle { 0% { transform: rotate(-10deg); } 100% { transform: rotate(10deg); } }
 
-        /* Cake CSS */
-        .cake-container { position: relative; width: 120px; height: 100px; margin: 0 auto; display: none; }
+        /* Cake CSS with internal states */
+        .cake-container { position: relative; width: 120px; height: 100px; display: none; }
         .cake-body { width: 120px; height: 70px; background: #f9d5e5; border-radius: 10px 10px 0 0; position: absolute; bottom: 0; border-bottom: 5px solid #e08fb1; }
         .cake-body::after { content: ''; position: absolute; width: 100%; height: 20px; background: #e08fb1; top: 20px; left: 0; }
         .topping { width: 100%; height: 15px; background: #ff85a2; position: absolute; top: 0; border-radius: 10px 10px 0 0; display: none; }
@@ -64,24 +74,28 @@
         .flame { width: 10px; height: 15px; background: orange; border-radius: 50%; position: absolute; top: -12px; left: -1px; animation: flicker 0.3s infinite; }
         @keyframes flicker { 50% { opacity: 0.6; transform: scale(1.2); } }
 
-        /* Slideshow for images */
-        .photo-slideshow { width: 100%; max-height: 250px; overflow: hidden; border-radius: 15px; border: 5px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom: 15px; display: none; }
-        .photo-slideshow img { width: 100%; height: 100%; object-fit: cover; display: none; }
-        .photo-slideshow img.active { display: block; }
+        /* User Content: Photo Memories Section */
+        .photo-memories { display: none; }
+        .memories-title { font-family: 'Dancing Script', cursive; font-size: 1.8rem; color: #ff85a2; margin-bottom: 15px; }
+        .photo-cluster { width: 100%; display: flex; flex-wrap: wrap; justify-content: space-around; gap: 10px; margin-bottom: 15px; }
+        .memory-frame { width: 45%; border-radius: 10px; overflow: hidden; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .memory-frame img { width: 100%; height: 100%; object-fit: cover; }
+        .memory-link-annotation { display: none; position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.5); color: white; padding: 2px 5px; font-size: 0.7rem; border-radius: 3px; }
 
-        /* Cat-in-the-box (Final Animation Scene) */
-        #cat-final { display: none; position: relative; width: 120px; height: 150px; margin-bottom: 20px; overflow: hidden; background: #d7ccc8; border-radius: 10px 10px 0 0; }
-        .box-top { width: 100%; height: 20px; background: #8d6e63; position: absolute; top: -20px; transition: 0.5s; }
-        .cat-face { width: 80px; height: 80px; background: white; border-radius: 50%; position: absolute; top: 130px; left: 20px; transition: top 0.5s ease-out; box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
-        .cat-face:before, .cat-face:after { content: ''; position: absolute; width: 20px; height: 20px; background: white; border-radius: 50%; top: -10px; }
-        .cat-face:before { left: 10px; } .cat-face:after { right: 10px; }
-        .eye { width: 10px; height: 10px; background: black; border-radius: 50%; position: absolute; top: 25px; }
-        .eye-left { left: 20px; } .eye-right { right: 20px; }
-        .nose { width: 10px; height: 10px; background: #ff80ab; border-radius: 5px; position: absolute; top: 40px; left: 35px; }
+        /* Plane user text paragraph section */
+        .plane-text-section { display: none; text-align: left; margin: 15px 0; max-height: 200px; overflow-y: auto; }
+        .plane-text-section p { font-size: 0.85rem; line-height: 1.5; margin-bottom: 10px; }
 
-        /* Final Cat Box Text (Recreating image 1 bunting effect) */
-        .bunting-final { display: none; font-size: 1.2rem; margin: 10px 0; color: #d63384; font-family: 'Dancing Script', cursive; animation: floatText 2s infinite; }
-        @keyframes floatText { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        /* Bunting effect main logic: Image 2 final scene bunting */
+        .bunting { display: none; width: 100%; height: 50px; background: repeating-linear-gradient(90deg, #ff85a2, #ff85a2 10px, #a1c4fd 10px, #a1c4fd 20px, #c2e9fb 20px, #c2e9fb 30px); position: absolute; top: 0; }
+
+        /* Final Cat Box Logic with confetti main logic background */
+        .cat-box-final { display: none; margin-top: 20px; position: relative; width: 120px; height: 150px; }
+        .final-box { width: 120px; height: 100px; background: #d7ccc8; border-radius: 10px; position: absolute; bottom: 0; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .final-cat { position: absolute; width: 80px; height: 80px; background: white; border-radius: 50%; left: 20px; top: -40px; display: flex; align-items: center; justify-content: center; transform: translateY(-10px); animation: catPop 0.5s ease-out; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .final-cat:before, .final-cat:after { content: ''; position: absolute; width: 15px; height: 15px; background: white; border-radius: 50%; top: -8px; }
+        .final-cat:before { left: 15px; } .final-cat:after { right: 15px; }
+        @keyframes catPop { 0% { transform: translateY(0); } 100% { transform: translateY(-10px); } }
 
         /* Buttons */
         .btn {
@@ -96,177 +110,191 @@
         /* Text Styles */
         h1 { color: #d63384; font-size: 1.4rem; margin: 10px 0; }
         p { color: #666; font-size: 0.9rem; line-height: 1.5; margin: 5px 0; }
-        .user-text { text-align: left; }
     </style>
 </head>
 <body>
 
-    <div class="bg-element" style="top: 10%; left: 10%; font-size: 30px;">🎈</div>
-    <div class="bg-element" style="top: 20%; right: 15%; font-size: 25px;">⭐</div>
-    <div class="bg-element" style="bottom: 15%; left: 20%; font-size: 35px;">🌸</div>
+    <div class="mobile-frame">
+        <div class="bg-element" style="top: 10%; left: 10%; font-size: 30px;">🎈</div>
+        <div class="bg-element" style="top: 20%; right: 15%; font-size: 25px;">⭐</div>
+        <div class="bg-element" style="bottom: 15%; left: 20%; font-size: 35px;">🌸</div>
 
-    <div class="mute-btn" id="mute-btn" onclick="toggleMute()">
-        <svg viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77zM3 9v6h4l5 5V4L7 9H3z"></path></svg>
-    </div>
+        <div class="mute-btn" id="mute-btn" onclick="toggleMute()">
+            <i class="fas fa-volume-up"></i>
+        </div>
 
-    <audio id="bday-music" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-    </audio>
+        <div class="bunting" id="bunting"></div>
 
-    <div id="stage1" class="scene active">
-        <div class="heart-loader"></div>
-        <h1>Hey Arooj!</h1>
-        <p>A Cutiepie was born today...</p>
-        <p><strong>Birthdate: 12 April 2009</strong></p>
-        <p>Yes, it's YOU! A little surprise awaits...</p>
-        <button class="btn" onclick="startSurprise()">Start the surprise 🎁</button>
-    </div>
+        <div id="stage1" class="scene active">
+            <div class="panda-anim"></div>
+            <h1>Hey Arooj!</h1>
+            <p>A Cutiepie was born today...</p>
+            <p><strong>Birthdate: 12 April 2009</strong></p>
+            <p>Yes, it's YOU! A little surprise awaits...</p>
+            <button class="btn" onclick="startSurprise()">Start the surprise 🎁</button>
+        </div>
 
-    <div id="stage2" class="scene">
-        <div id="cake-container-parent" style="height: 180px; display: flex; align-items: center;">
-            <div class="cake-container" id="cake">
-                <div class="cake-body">
-                    <div class="topping" id="cakeTopping"></div>
-                </div>
-                <div class="candles" id="cakeCandles">
-                    <div class="candle"><div class="flame"></div></div>
-                    <div class="candle"><div class="flame"></div></div>
-                    <div class="candle"><div class="flame"></div></div>
+        <div id="stage2" class="scene">
+            <div id="cake-container-parent" style="height: 180px; display: flex; align-items: center;">
+                <div class="cake-container" id="cake">
+                    <div class="cake-body">
+                        <div class="topping" id="cakeTopping"></div>
+                    </div>
+                    <div class="candles" id="cakeCandles">
+                        <div class="candle"><div class="flame"></div></div>
+                        <div class="candle"><div class="flame"></div></div>
+                        <div class="candle"><div class="flame"></div></div>
+                    </div>
                 </div>
             </div>
+            <h1>Let's make it special!</h1>
+            <p id="cakeText">The cake looks a bit empty, right?</p>
+            <button class="btn" id="decorateBtn" onclick="decorateCake()">Decorate the cake ✨</button>
+            <button class="btn" id="lightBtn" style="display:none;" onclick="lightCandles()">Light the candles 🕯️</button>
+            <button class="btn" id="cutBtn" style="display:none;" onclick="cutTheCake()">Cut the cake 🎂</button>
         </div>
-        <h1>Let's make it special!</h1>
-        <p>The cake looks a bit empty...</p>
-        <button class="btn" id="decorateBtn" onclick="decorateCake()">Decorate the cake ✨</button>
-        <button class="btn" id="cutBtn" style="display:none;" onclick="cutTheCake()">Cut the cake 🎂</button>
-    </div>
 
-    <div id="stage3" class="scene user-text">
-        <div class="photo-slideshow" id="photo-slideshow">
-            <img class="active" src="https://i.ibb.co/5xtNqX0h/image.jpg">
-            <img src="https://i.ibb.co/svKrgk0c/image.jpg">
-            <img src="https://i.ibb.co/RG9By1hp/image.jpg">
+        <div id="stage3" class="scene">
+            <p id="cakeDissolveMsg">A wish for you... 💖 (Cake dissolves)</p>
+            <button class="btn" id="memoriesBtn" onclick="showMemories()">Show memories ✨</button>
         </div>
-        <p id="slideshowText">Happy Birthday to the most special girl, my bestie jan Arooj 🎂👑💖</p>
-        <button class="btn" onclick="nextSlide()">Next Surprise ✨</button>
-    </div>
 
-    <div id="stage4" class="scene">
-        <div id="cat-final">
-            <div class="box-top"></div>
-            <div class="cat-face">
-                <div class="eye eye-left"></div>
-                <div class="eye eye-right"></div>
-                <div class="nose"></div>
+        <div id="stage4" class="scene">
+            <div class="photo-memories" id="photo-memories">
+                <h1 class="memories-title">Your Memories</h1>
+                <div class="photo-cluster">
+                    <div class="memory-frame">
+                        <img src="https://i.ibb.co/5xtNqX0h/image.jpg">
+                        <span class="memory-link-annotation">#1</span>
+                    </div>
+                    <div class="memory-frame">
+                        <img src="https://i.ibb.co/svKrgk0c/image.jpg">
+                        <span class="memory-link-annotation">#2</span>
+                    </div>
+                    <div class="memory-frame">
+                        <img src="https://i.ibb.co/RG9By1hp/image.jpg">
+                        <span class="memory-link-annotation">#3</span>
+                    </div>
+                </div>
+                <p>A collection of beautiful moments...</p>
             </div>
+            <button class="btn" id="messageBtn" onclick="showMessage()">A message... ✨</button>
         </div>
-        <h1 class="bunting-final">Lots of love for you ❤️</h1>
-        <p>Once again, Happy Birthday Arooj! Hope you loved your surprise.</p>
-        <button class="btn" onclick="location.reload()">Replay ↻</button>
+
+        <div id="stage5" class="scene">
+            <h1>A Message for my Bestie</h1>
+            <div class="plane-text-section" id="plane-text-section">
+                <p>You’re not just my best friend, you’re my whole vibe, my happiness, and my favorite person 🥹💕</p>
+                <p>With you, every moment feels magical and every laugh feels extra special ✨😂</p>
+                <p>May your life be filled with endless smiles, crazy adventures, and all the love you truly deserve 🌸💫💝</p>
+                <p>I pray Allah blesses you with success, peace, and everything your heart wishes for 🤲❤️</p>
+                <p>Thank you for being my partner in crime, my secret keeper, and my forever support 🫶😄</p>
+                <p>I’m so lucky to have you in my life, Arooj 💕🥰</p>
+                <p>Love you forever, bestie jan 😘💖<br>Now enjoy your day like a queen... because today is all about YOU 👑🎉🔥</p>
+            </div>
+            <button class="btn" id="finalBtn" onclick="showFinalSurprise()">Final Surprise -></button>
+        </div>
+
+        <div id="stage6" class="scene">
+            <div class="cat-box-final" id="cat-box-final">
+                <div class="final-box"></div>
+                <div class="final-cat">
+                    <img src="https://img.icons8.com/color/100/happy-heart.png" style="width: 40px; margin-top: 10px;">
+                    <img src="https://img.icons8.com/emoji/100/red-heart-emoji.png" style="width: 50px; position: absolute; right: -70px; top: 10px; animation: float 3s infinite;">
+                </div>
+            </div>
+            <h1>Lots of love for you ❤️</h1>
+            <p>Once again, Happy Birthday Arooj! Hope you loved your surprise.</p>
+            <button class="btn" onclick="location.reload()">Replay ↻</button>
+        </div>
+
+        <p style="text-align:center; font-size: 0.7rem; color: #999; margin-top: 20px;">@anujbuilds / ion-demo.pages.dev</p>
+
+        <audio id="bday-music" loop>
+            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        </audio>
     </div>
 
     <script>
-        const slideshowData = [
-            { text: "Happy Birthday to the most special girl, my bestie jan Arooj 🎂👑💖" },
-            { text: "You’re not just my best friend, you’re my whole vibe, my happiness, and my favorite person 🥹💕<br>With you, every moment feels magical and every laugh feels extra special ✨😂" },
-            { text: "May your life be filled with endless smiles, crazy adventures, and all the love you truly deserve 🌸💫💝<br>I pray Allah blesses you with success, peace, and everything your heart wishes for 🤲❤️<br>Thank you for being my partner in crime, my secret keeper, and my forever support 🫶😄<br>I’m so lucky to have you in my life, Arooj 💕🥰<br>Love you forever, bestie jan 😘💖<br>Now enjoy your day like a queen... because today is all about YOU 👑🎉🔥" }
-        ];
-
-        let currentSlide = 0;
-        let isMuted = false;
         const music = document.getElementById('bday-music');
+        let isMuted = false;
 
         function toggleMute() {
             isMuted = !isMuted;
             music.muted = isMuted;
             document.getElementById('mute-btn').innerHTML = isMuted ? 
-                '<svg viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77zM3 9v6h4l5 5V4L7 9H3zM10.41 12l2.29-2.29-1.41-1.41-2.29 2.29-2.29-2.29-1.41 1.41 2.29 2.29-2.29 2.29 1.41 1.41 2.29-2.29 2.29 2.29 1.41-1.41-2.29-2.29z"></path></svg>' :
-                '<svg viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77zM3 9v6h4l5 5V4L7 9H3z"></path></svg>';
+                '<i class="fas fa-volume-mute"></i>' :
+                '<i class="fas fa-volume-up"></i>';
         }
 
-        function goToStage(n) {
+        function goToScene(n) {
             document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
             document.getElementById('stage' + n).classList.add('active');
         }
 
         function startSurprise() {
             music.play();
-            music.muted = true; // Auto-play is often blocked, mute initially to attempt play
-            setTimeout(() => music.muted = isMuted, 500); // Unmute after a delay
-            goToStage(2);
+            goToScene(2);
             document.getElementById('cake').style.display = 'block';
+            gsap.from("#stage2", { scale: 0.5, opacity: 0, duration: 0.5 });
         }
 
         function decorateCake() {
             document.getElementById('cakeTopping').style.display = 'block';
-            document.getElementById('cakeCandles').style.display = 'flex';
+            document.getElementById('cakeText').innerText = 'Looks special! Next step...';
             document.getElementById('decorateBtn').style.display = 'none';
-            document.getElementById('cutBtn').style.display = 'inline-block';
+            document.getElementById('lightBtn').style.display = 'inline-block';
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
         }
 
+        function lightCandles() {
+            document.getElementById('cakeCandles').style.display = 'flex';
+            document.getElementById('cakeText').innerText = 'Ready to cut? ✨';
+            document.getElementById('lightBtn').style.display = 'none';
+            document.getElementById('cutBtn').style.display = 'inline-block';
+            confetti({ particleCount: 100, spread: 60, origin: { y: 0.6 } });
+        }
+
         function cutTheCake() {
+            // GSAP dissolve logic over 1.5s
             gsap.to("#cake", { 
                 opacity: 0, 
                 scale: 0.5, 
                 duration: 1.5, 
                 onComplete: () => {
                     document.getElementById('cake-container-parent').style.display = 'none';
-                    document.getElementById('stage2').innerHTML = `
-                        <h1>Make a Wish! 🕯️</h1>
-                        <p>Blow the candle... (Cake cut)</p>
-                        <p style="font-size: 0.8rem; margin-top: 10px;">Confetti for you...</p>
-                        <button class="btn" onclick="startContentSlideshow()">Show pictures ✨</button>
-                    `;
                     confetti({ particleCount: 100, spread: 60, origin: { y: 0.7 } });
+                    goToScene(3);
                 }
             });
         }
 
-        function startContentSlideshow() {
-            goToStage(3);
-            document.getElementById('photo-slideshow').style.display = 'block';
-            updateContentSlide();
+        function showMemories() {
+            goToScene(4);
+            document.getElementById('photo-memories').style.display = 'block';
+            // Subtle animation for cluster entries
+            gsap.from(".memory-frame", { y: 30, opacity: 0, duration: 0.5, stagger: 0.2 });
         }
 
-        function updateContentSlide() {
-            const data = slideshowData[currentSlide];
-            document.getElementById('slideshowText').innerHTML = data.text;
-            
-            // Image Slideshow logic
-            const images = document.querySelectorAll('#photo-slideshow img');
-            if (images.length > 0) {
-                images.forEach(img => img.classList.remove('active'));
-                images[currentSlide].classList.add('active');
-                gsap.from(images[currentSlide], { x: 50, opacity: 0, duration: 0.5 });
-            }
-            gsap.from("#slideshowText", { x: 50, opacity: 0, duration: 0.5 });
+        function showMessage() {
+            goToScene(5);
+            document.getElementById('plane-text-section').style.display = 'block';
+            // Plane text fade main logic: Fade entire paragraph block smoothly
+            gsap.from("#plane-text-section", { opacity: 0, duration: 1 });
         }
 
-        function nextSlide() {
-            currentSlide++;
-            if (currentSlide < slideshowData.length) {
-                updateContentSlide();
-                if (currentSlide === slideshowData.length - 1) {
-                    document.querySelector('#stage3 .btn').innerText = "Final Message ✨";
-                }
-            } else {
-                goToFinalStage();
-            }
-        }
-
-        function goToFinalStage() {
-            goToStage(4);
-            document.getElementById('cat-final').style.display = 'block';
-            document.querySelector('.bunting-final').style.display = 'block';
+        function showFinalSurprise() {
+            goToScene(6);
+            document.getElementById('cat-box-final').style.display = 'block';
+            document.getElementById('bunting').style.display = 'block';
             confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 }, colors: ['#ff80ab', '#f8bbd0', '#f48fb1'] });
             
-            // Recreating image 1 bunting effect as background
+            // Recreating image 2 bunting effect main logic with background confetti main logic
             confetti({ particleCount: 5, spread: 160, origin: { x: 0.5, y: -0.1 }, startVelocity: 0, gravity: 0.2, colors: ['#ff80ab', '#f8bbd0'] });
             confetti({ particleCount: 5, spread: 160, origin: { x: 0.5, y: -0.1 }, startVelocity: 0, gravity: 0.2, colors: ['#ff80ab', '#f8bbd0'] });
         }
 
-        // Add confetti to make background elements appear active
+        // Automatic background elements appearance active
         function fireBackgroundConfetti() {
             confetti({ particleCount: 2, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff85a2', '#ffacbd'] });
             confetti({ particleCount: 2, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff85a2', '#ffacbd'] });
